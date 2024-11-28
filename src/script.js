@@ -2,6 +2,70 @@
 
 // Add spinning state flag
 let isSpinning = false;
+let wheelAudio = null;
+let victorySound = null;
+
+// Initialize audio
+function initAudio() {
+    if (!wheelAudio) {
+        wheelAudio = new Audio('./spin-232536.mp3');
+        wheelAudio.loop = true;
+        wheelAudio.volume = 0.6;
+    }
+    
+    if (!victorySound) {
+        victorySound = new Audio('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
+        victorySound.volume = 0.4;
+    }
+}
+
+// Initialize confetti
+function initConfetti() {
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+    const count = 200;
+    const defaults = {
+        origin: { y: 0.7 },
+        spread: 360,
+        ticks: 100,
+        gravity: 0.8,
+        decay: 0.95,
+        startVelocity: 30,
+        shapes: ['square', 'circle', '🤩'],
+        colors: colors,
+        scalar: 1.2
+    };
+
+    function fire(particleRatio, opts) {
+        confetti({
+            ...defaults,
+            ...opts,
+            particleCount: Math.floor(count * particleRatio)
+        });
+    }
+
+    fire(0.25, {
+        spread: 26,
+        startVelocity: 55,
+    });
+    fire(0.2, {
+        spread: 60,
+    });
+    fire(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8
+    });
+    fire(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2
+    });
+    fire(0.1, {
+        spread: 120,
+        startVelocity: 45,
+    });
+}
 
 export default ()=>{
     let wheel = document.querySelector(".wheel");
@@ -9,6 +73,15 @@ export default ()=>{
 
     // Set spinning state to true
     isSpinning = true;
+
+    // Initialize and play spinning sound
+    initAudio();
+    if (wheelAudio) {
+        wheelAudio.currentTime = 0;
+        wheelAudio.play().catch(error => {
+            console.error('Error playing audio:', error);
+        });
+    }
 
     // Remove any existing transition end listener
     wheel.removeEventListener('transitionend', handleSpinComplete);
@@ -27,6 +100,12 @@ function handleSpinComplete(event) {
     
     // Reset spinning state
     isSpinning = false;
+
+    // Stop the spinning sound immediately
+    if (wheelAudio) {
+        wheelAudio.pause();
+        wheelAudio.currentTime = 0;
+    }
 
     const wheel = event.target;
     const rotation = getRotationDegrees(wheel);
@@ -65,13 +144,23 @@ function showResultPopup(result) {
         existingPopup.remove();
     }
 
+    // Play victory sound
+    if (victorySound) {
+        victorySound.currentTime = 0;
+        victorySound.play().catch(error => {
+            console.error('Error playing victory sound:', error);
+        });
+    }
+
+    // Trigger confetti effect
+    initConfetti();
+
     const popup = document.createElement('div');
     popup.className = 'result-popup';
     popup.innerHTML = `
         <div class="popup-content">
-            <h2>Result</h2>
-            <p class="result-text">${result}</p>
-            <button onclick="this.parentElement.parentElement.remove()">Close</button>
+            <p class="result-text ${result}">${result}!</p>
+            <button class="got-it ${result}" onclick="this.parentElement.parentElement.remove()">GOT IT!</button>
         </div>
     `;
     document.body.appendChild(popup);

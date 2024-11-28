@@ -11,7 +11,7 @@ export default function App() {
         <div className="relative w-[400px] h-[400px] flex justify-center items-center mt-36">
           <button 
             onClick={click}
-            className="absolute z-10 w-[60px] h-[60px] rounded-full bg-gray-100 border-4 border-gray-200 flex justify-center items-center font-semibold uppercase tracking-wider cursor-pointer select-none before:content-[''] before:absolute before:-top-7 before:w-5 before:h-8 before:bg-gray-100 before:border-[3px] before:border-gray-200 before:clip-path-triangle"
+            className="absolute z-10 w-[60px] h-[60px] rounded-full bg-gray-100 border-4 border-gray-200 flex justify-center items-center font-semibold uppercase tracking-wider cursor-pointer select-none before:content-[''] before:absolute before:-top-8 before:w-6 before:h-10 before:bg-gray-100 before:border-[3px] before:border-gray-200 before:[clip-path:polygon(50%_0%,20%_100%,80%_100%)]"
           >
             Spin!
           </button>

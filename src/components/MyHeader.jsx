@@ -1,9 +1,9 @@
 export default function MyHeader(){
     return(
         <>
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 hidden sm:block">
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
                 <h1 className="text-6xl font-semibold p-4 drop-shadow-[2px_4px_2px_rgba(0,0,0,1)]">
-                    <span className="text-purple-600">YES</span>/<span className="text-[#de1212]">NO</span>
+                    <span className="text-[#00ff00]">YES</span>/<span className="text-[rgb(255,64,0)]">NO</span>
                 </h1>
             </div>
             {/* <span style={{fontWeight:500,fontSize:15,marginLeft:2}}>
