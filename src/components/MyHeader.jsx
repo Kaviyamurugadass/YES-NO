@@ -1,12 +1,12 @@
 export default function MyHeader(){
     return(
-        <>
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
-                <h1 className="text-6xl font-semibold p-4 drop-shadow-[2px_4px_2px_rgba(0,0,0,1)]">
-                    <span className="text-[#00ff00]">YES</span>/<span className="text-[rgb(255,64,0)]">NO</span>
-                </h1>
-            </div>
-            {/* <span style={{fontWeight:500,fontSize:15,marginLeft:2}}>
-"Are you feeling too confused to make a decision? Let's spin the wheel and let it make the decision for you."</span> */}
-        </>);
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-center">
+            <h1 className="text-4xl md:text-6xl font-semibold p-4 drop-shadow-[2px_4px_2px_rgba(0,0,0,1)]">
+                <span className="text-[#00ff00]">YES</span>/<span className="text-[rgb(255,64,0)]">NO</span>
+            </h1>
+            <p className="text-gray-700 text-sm md:text-base px-4 max-w-md mx-auto font-medium">
+                If you're too confused to make a decision, let this magic wheel help you!
+            </p>
+        </div>
+    );
 }

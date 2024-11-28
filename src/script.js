@@ -69,8 +69,23 @@ function initConfetti() {
 
 export default ()=>{
     let wheel = document.querySelector(".wheel");
-    var value = Math.floor(Math.random()*3600+3600);
-
+    
+    // If already spinning, ignore the click
+    if (isSpinning) return;
+    
+    // Calculate a random number of complete rotations (5-10) plus extra degrees
+    const minSpins = 5;
+    const maxSpins = 10;
+    const spins = Math.floor(Math.random() * (maxSpins - minSpins + 1) + minSpins);
+    const extraDegrees = Math.floor(Math.random() * 360);
+    const totalDegrees = (spins * 360) + extraDegrees;
+    
+    // Get current rotation
+    const currentRotation = getRotationDegrees(wheel);
+    
+    // Add to current rotation to ensure continuous spinning
+    const value = currentRotation + totalDegrees;
+    
     // Set spinning state to true
     isSpinning = true;
 
@@ -89,7 +104,9 @@ export default ()=>{
     // Add transition end listener
     wheel.addEventListener('transitionend', handleSpinComplete);
 
-    wheel.style.transform = "rotate(" +value+ "deg)";
+    // Apply the new rotation with a consistent transition
+    wheel.style.transition = 'transform 5s cubic-bezier(0.2, 0.8, 0.3, 1)';
+    wheel.style.transform = `rotate(${value}deg)`;
     console.log("Spinning to degree:", value);
 };
 
@@ -128,12 +145,37 @@ function getRotationDegrees(element) {
 
 // Calculate whether it landed on YES or NO
 function calculateResult(rotation) {
-    // Each segment is 60 degrees (360/6)
+    // Normalize rotation to a value between 0 and 360
     const normalizedRotation = rotation % 360;
+    console.log('Normalized Rotation:', normalizedRotation);
+    
+    // Each segment is 60 degrees (360/6)
     const segmentSize = 60;
-    const segment = Math.floor(normalizedRotation / segmentSize);
-    // Odd segments are YES (1, 3, 5), even segments are NO (0, 2, 4)
-    return segment % 2 === 1 ? 'YES' : 'NO';
+    
+    // Calculate the segment index (0-5)
+    // Add 30 degrees to account for the offset and reverse the direction
+    let segmentIndex = Math.floor(((360 - (normalizedRotation + 30)) % 360) / segmentSize);
+    console.log('Initial Segment Index:', segmentIndex);
+    
+    // Map to ARRAY_OBJ index (1-based)
+    // We need to adjust the mapping to match the visual segments
+    const mappedIndex = ((segmentIndex + 1) % 6) || 6;  // Convert 0 to 6
+    console.log('Mapped Index:', mappedIndex);
+    
+    // Log segment boundaries for debugging
+    const segmentStart = (360 - ((segmentIndex + 1) * 60 + 30)) % 360;
+    const segmentEnd = (360 - (segmentIndex * 60 + 30)) % 360;
+    console.log(`Segment ${mappedIndex} boundaries: ${segmentStart}° to ${segmentEnd}°`);
+    
+    // Find the matching segment in ARRAY_OBJ
+    const segment = ARRAY_OBJ.find(obj => Number(obj.num) === mappedIndex);
+    console.log('Found Segment:', segment);
+    
+    if (segment) {
+        console.log(`Landing on segment ${segment.num}: ${segment.child} (${segment.color})`);
+    }
+    
+    return segment ? segment.child : 'YES';
 }
 
 // Show the result popup
